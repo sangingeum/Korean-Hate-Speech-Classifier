@@ -1,5 +1,5 @@
 from sklearn.metrics import classification_report
-from Model import *
+from model import *
 from utils import *
 from unsmile_dataset.UnsmileDataset import *
 from torch.utils.data import DataLoader

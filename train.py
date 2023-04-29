@@ -1,8 +1,7 @@
-from Model import *
+from model import *
 from unsmile_dataset.UnsmileDataset import *
 from utils import *
 import sys
-
 
 if __name__ == '__main__':
 
