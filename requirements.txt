@@ -3,3 +3,7 @@ numpy
 transformers
 datasets
 pyarrow
+aiohttp
+multidict
+yarl
+scikit-learn
