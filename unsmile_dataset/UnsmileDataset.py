@@ -1,24 +1,33 @@
-import csv
 import torch
 import numpy as np
+from datasets import load_dataset
+from torch.utils.data import Dataset
 
-def load_unsmile_data(train=True, return_column_name=True, return_torch=True):
+class TextDataset(Dataset):
+    def __init__(self, texts, labels):
+        self.texts = texts
+        self.labels = labels
+
+    def __len__(self):
+        return len(self.texts)
+
+    def __getitem__(self, idx):
+        text = self.texts[idx]
+        label = self.labels[idx]
+        return text, label
+
+def load_unsmile_data(train=True, return_label_features=False):
     if train:
-        file_name = "unsmile_dataset/unsmile_train_v1.0.tsv"
+        split_name = "train"
     else:
-        file_name = "unsmile_dataset/unsmile_valid_v1.0.tsv"
-    with open(file_name, encoding="utf-8") as file:
-        tsv_file = csv.reader(file, delimiter="\t")
-        data = [line for line in tsv_file]
-        column_name = data[0]
-        data = data[1:]
-    texts = [row[0] for row in data]
-    labels = [int(label) for row in data for label in row[1:]]
-    if return_torch:
-        labels = torch.reshape(torch.tensor(labels, dtype=torch.float32), (-1, 11))
-    else:
-        labels = np.reshape(labels, (-1, 11)).astype("float32")
-    if return_column_name:
-        return texts, labels, column_name
-    else:
-        return texts, labels
+        split_name = "valid"
+    datasets = load_dataset('smilegate-ai/kor_unsmile', split=split_name)
+    label_features = ['여성/가족', '남성', '성소수자', '인종/국적', '연령', '지역', '종교', '기타 혐오', '악플/욕설', 'clean', '개인지칭']
+    texts = datasets['문장']
+    temp = [np.reshape(datasets[feature], (-1, 1)) for feature in label_features]
+    labels = np.hstack(temp)
+    labels = torch.reshape(torch.tensor(labels, dtype=torch.float32, requires_grad=False), (-1, 11))
+    torch_dataset = TextDataset(texts, labels)
+    if return_label_features:
+        return torch_dataset, label_features
+    return torch_dataset
