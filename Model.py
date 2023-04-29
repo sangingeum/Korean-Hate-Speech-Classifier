@@ -1,7 +1,6 @@
 import torch
 from torch import nn
 from transformers import AutoTokenizer, AutoModel
-from collections import deque
 
 # "klue/bert-base", lstm -> 100 epochs, 65.5
 # "beomi/KcELECTRA-base-v2022", lstm -> 135 epochs, 72
@@ -49,26 +48,3 @@ class ClassificationModel(nn.Module):
         embeddings = model_output["last_hidden_state"]
         return embeddings
 
-
-        """
-            def embed_texts(self, texts: list, batch_size=512):
-        results = deque()
-        max_token_len = 0
-        for i in range(0, len(texts), batch_size):
-            batch_texts = texts[i:i + batch_size]
-            tokenized_texts = self.tokenizer(batch_texts, padding=True, return_tensors="pt").to(self.device)
-            #with torch.inference_mode():
-            model_output = self.model(input_ids=tokenized_texts['input_ids'], attention_mask=tokenized_texts['attention_mask'])
-            batch_embeddings = model_output["last_hidden_state"]
-            results.append(batch_embeddings)
-            max_token_len = max(max_token_len, batch_embeddings.shape[1])
-        # padding
-        for i, result in enumerate(results):
-            new_result = torch.zeros((result.shape[0], max_token_len, result.shape[2]))
-            new_result[:, :result.shape[1], :] = result
-            results[i] = new_result
-        # concatenate embeddings
-        embeddings = torch.cat(list(results), dim=0)
-        return embeddings
-        
-        """
