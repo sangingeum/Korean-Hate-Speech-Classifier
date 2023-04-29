@@ -40,7 +40,40 @@ You can test the accuracy of your model by running the following command:
 
 ## Result
 
-The results of the project will be reported once the classification model is developed and tested.
+Epoch 700번 만큼 학습한 모델로 classification report를 만들어보았다.   
+```python train.py model.pt```이 명령어를 실행하면 내가 했던 방식과 동일한 방식으로 학습을 할 수 있다.
+
+
+                  precision    recall  f1-score   support
+
+       여성/가족      0.78      0.81      0.79       394
+          남성       0.88      0.87      0.88       334
+        성소수자      0.87      0.82      0.84       280
+       인종/국적      0.84      0.75      0.80       426
+          연령       0.84      0.73      0.78       146
+          지역       0.89      0.87      0.88       260
+          종교       0.88      0.87      0.87       290
+       기타 혐오      0.00      0.00      0.00       134
+       악플/욕설      0.72      0.72      0.72       786
+       clean        0.82      0.78      0.80       935
+       개인지칭       0.00      0.00      0.00        74
+
+    micro avg       0.81      0.75      0.78      4059
+    macro avg       0.68      0.66      0.67      4059
+    weighted avg    0.77      0.75      0.76      4059
+    samples avg     0.81      0.78      0.79      4059
+
+[베이스라인모델](https://github.com/smilegate-ai/korean_unsmile_dataset)과 비교하였을 때, 유형별 f1-score 비교 결과는 다음과 같다.   
+
+    더 점수가 높게 나온 유형: 여성/가족, 남성, 성소수자, 악플/욕설, clean    
+    더 점수가 낮게 나온 유형: 인종/국적, 연령, 기타 혐오    
+    점수가 같게 나온 유형: 지역    
+
+
+특이한 점은 '기타 혐오'와 '개인지칭' 유형에서 f1 score가 0이 나왔다는 점이다.   
+이 유형들의 샘플이 부족해서 모델이 제대로 학습하지 못한 것으로 보인다.   
+다음엔 Weighted sampling을 사용해서 모델이 모든 유형을 골고루 배우게 해봐야겠다.   
+
 
 ## license
 
