@@ -31,7 +31,7 @@ if __name__ == '__main__':
     # Train
     train_loop(train_data_set=train_data_set, test_data_set=test_data_set, epochs=epochs, model=model, device=device,
                batch_size=batch_size, loss_function=loss_function, optimizer=optimizer, print_interval=print_interval,
-               accuracy_function=calculate_accuracy_multi_class, X_on_the_fly_function=model.embed_texts, test_first=True)
+               accuracy_function=calculate_accuracy, X_on_the_fly_function=model.embed_texts, test_first=True)
     save_model(save_path, model, optimizer)
 
 

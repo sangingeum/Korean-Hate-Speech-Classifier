@@ -1,7 +1,7 @@
 import torch
 from torch.utils.data import DataLoader
-
-
+from collections import deque
+from sklearn.metrics import accuracy_score
 def load_model(path, model, optimizer=None):
     checkpoint = torch.load(path)
     model.load_state_dict(checkpoint['model_state_dict'])
@@ -30,23 +30,21 @@ def calculate_test_loss(model, device, loss_function, test_data_loader, X_on_the
         average_test_loss /= len(test_data_loader.dataset)
     return average_test_loss
 
-def calculate_accuracy_multi_class(model, test_data_loader, device, X_on_the_fly_function=None):
+def calculate_accuracy(model, test_data_loader):
+    y_preds = deque()
+    ys = deque()
+    # Predict label
     model.eval()
-    correct = 0
-    total = 0
     with torch.inference_mode():
-        for data in test_data_loader:
-            X, y = data
-            if X_on_the_fly_function is not None:
-                X = X_on_the_fly_function(X)
-            X = X.to(device)
-            y = y.to(device)
-            outputs = model(X)
-            y_pred = torch.argmax(outputs, dim=1)
-            y = torch.argmax(y, dim=1)
-            correct += (y_pred == y).sum().item()
-            total += len(y)
-    return 100*correct/total
+        for (X, y) in test_data_loader:
+            X = model.embed_texts(X)
+            y_pred = torch.round(model(X))
+            y_preds.append(y_pred)
+            ys.append(y)
+        y_preds = torch.cat(list(y_preds), dim=0).cpu()
+        ys = torch.cat(list(ys), dim=0).cpu()
+
+    return accuracy_score(ys, y_preds)
 
 def print_learning_progress(epoch, train_loss, test_loss, accuracy=None):
     progress_string = "\nepoch: {}"\
@@ -96,7 +94,7 @@ def print_progress(train_data_loader, test_data_loader, model, device, epoch, lo
     if accuracy_function is None:
         print_learning_progress(epoch, average_train_loss, average_test_loss)
     else:
-        accuracy = accuracy_function(model, test_data_loader, device, X_on_the_fly_function)
+        accuracy = accuracy_function(model, test_data_loader)
         print_learning_progress(epoch, average_train_loss, average_test_loss, accuracy)
 
 
