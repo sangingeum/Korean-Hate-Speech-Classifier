@@ -37,10 +37,5 @@ if __name__ == '__main__':
         y_preds = torch.cat(list(y_preds), dim=0).cpu()
         ys = torch.cat(list(ys), dim=0).cpu()
     # Convert
-    print(y_preds.shape)
-    print(ys.shape)
-    print(torch.max(ys))
-    print(torch.max(y_preds))
-    print(label_features)
     print(classification_report(ys, y_preds, target_names=label_features))
 
