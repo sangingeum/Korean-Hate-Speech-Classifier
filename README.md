@@ -74,6 +74,16 @@ Epoch 700번 만큼 학습한 모델로 classification report를 만들어보았
 이 유형들의 샘플이 부족해서 모델이 제대로 학습하지 못한 것으로 보인다.   
 다음엔 Weighted sampling을 사용해서 모델이 모든 유형을 골고루 배우게 해봐야겠다.   
 
+## Prediction
+
+    python predict.py model.pt
+
+모델의 학습이 종료된 후, 위와 같이 명령어를 실행하면 모델로 임의의 텍스트를 분류해볼 수 있습니다.
+
+**prediction 모드 사용 예시:**
+
+<img src="./readme_images/result.PNG" alt="screenshot1" width="800" height="500"/>
+
 
 ## license
 
